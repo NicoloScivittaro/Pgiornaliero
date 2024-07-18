@@ -1,0 +1,52 @@
+﻿@page
+@model Pgiornaliero.Models.TrackingModel
+@{
+    ViewData["Title"] = "Tracking";
+}
+
+<h1>Tracking</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="codiceFiscale">Codice Fiscale/Partita IVA</label>
+        <input type="text" class="form-control" id="codiceFiscale" name="codiceFiscale" />
+    </div>
+    <div class="form-group">
+        <label for="numeroSpedizione">Numero di Spedizione</label>
+        <input type="text" class="form-control" id="numeroSpedizione" name="numeroSpedizione" />
+    </div>
+    <button type="submit" class="btn btn-primary">Verifica</button>
+</form>
+
+@if (Model.Spedizione != null)
+{
+    <h2>Dettagli Spedizione</h2>
+    <p>Numero Identificativo: @Model.Spedizione.NumeroIdentificativo</p>
+    <p>Data Spedizione: @Model.Spedizione.DataSpedizione</p>
+    <p>Città Destinataria: @Model.Spedizione.CittaDestinataria</p>
+    <p>Indirizzo Destinatario: @Model.Spedizione.IndirizzoDestinatario</p>
+    <p>Nominativo Destinatario: @Model.Spedizione.NominativoDestinatario</p>
+    <p>Costo: @Model.Spedizione.Costo</p>
+    <p>Data Consegna Prevista: @Model.Spedizione.DataConsegnaPrevista</p>
+
+    @if (Model.Spedizione.Aggiornamenti.Any())
+    {
+        <h3>Aggiornamenti</h3>
+        <ul>
+            @foreach (var aggiornamento in Model.Spedizione.Aggiornamenti.OrderByDescending(a => a.DataOra))
+            {
+                <li>
+                    <strong>@aggiornamento.DataOra:</strong> @aggiornamento.Stato - @aggiornamento.Luogo - @aggiornamento.Descrizione
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Nessun aggiornamento disponibile per questa spedizione.</p>
+    }
+}
+else if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+{
+    <p class="text-danger">@ViewData["ErrorMessage"]</p>
+}
